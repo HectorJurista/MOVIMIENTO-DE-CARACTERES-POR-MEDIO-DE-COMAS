@@ -1,0 +1,101 @@
+import React, { useState } from 'react';
+
+type CharacterRange =
+  | '1-500'
+  | '501-1000'
+  | '1001-1500'
+  | '1501-2000'
+  | '2001-2022';
+
+type CommaOption = ',,';
+
+interface FormData {
+  characterRange: CharacterRange | null;
+  commaSelection: CommaOption | null;
+}
+
+export default function App() {
+  const [formData, setFormData] = useState<FormData>({
+    characterRange: null,
+    commaSelection: null,
+  });
+  const [savedData, setSavedData] = useState<FormData | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleCharacterRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData({ ...formData, characterRange: event.target.value as CharacterRange });
+  };
+
+  const handleCommaSelectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData({ ...formData, commaSelection: event.target.value as CommaOption });
+  };
+
+  const handleSave = () => {
+    if (formData.characterRange && formData.commaSelection) {
+      setSavedData(formData);
+      setIsSaved(true);
+    } else {
+      alert('Please select both a character range and a comma option.');
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Character Selection App</h1>
+
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+        <div className="mb-4">
+          <label htmlFor="characterRange" className="block text-gray-700 text-sm font-bold mb-2">
+            Select Character Range:
+          </label>
+          <select
+            id="characterRange"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={formData.characterRange || ''}
+            onChange={handleCharacterRangeChange}
+          >
+            <option value="">-- Select a Range --</option>
+            <option value="1-500">1-500</option>
+            <option value="501-1000">501-1000</option>
+            <option value="1001-1500">1001-1500</option>
+            <option value="1501-2000">1501-2000</option>
+            <option value="2001-2022">2001-2022</option>
+          </select>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="commaSelection" className="block text-gray-700 text-sm font-bold mb-2">
+            Select Comma Option:
+          </label>
+          <select
+            id="commaSelection"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={formData.commaSelection || ''}
+            onChange={handleCommaSelectionChange}
+          >
+            <option value="">-- Select an Option --</option>
+            <option value=",,">,,</option>
+          </select>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            onClick={handleSave}
+          >
+            Accept and Save
+          </button>
+        </div>
+      </div>
+
+      {isSaved && savedData && (
+        <div className="mt-8 p-4 bg-green-100 border border-green-400 rounded-md">
+          <h2 className="text-lg font-semibold text-green-700">Saved Data:</h2>
+          <p className="text-gray-700">Character Range: {savedData.characterRange}</p>
+          <p className="text-gray-700">Comma Selection: {savedData.commaSelection}</p>
+        </div>
+      )}
+    </div>
+  );
+}
